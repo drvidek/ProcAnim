@@ -5,7 +5,7 @@ using UnityEngine;
 public class InverseKinematics : MonoBehaviour
 {
     [SerializeField] private JointInfo[] joints;
-    [SerializeField] private float samplingDistance, learningRate, snappingDistance;
+    [SerializeField] private float samplingDistance, learningRate, stoppingDistance;
     [SerializeField] private Transform target;
     [SerializeField] float[] angles;
 
@@ -57,10 +57,16 @@ public class InverseKinematics : MonoBehaviour
 
     public void DoInverseKinematics(Vector3 target, float[] angles)
     {
-        for (int i = 0; i < joints.Length; i++)
+        if (DistanceFromTarget(target, angles) < stoppingDistance)
+            return;
+
+        for (int i = joints.Length -1; i >= 0; i--)
         {
             float gradient = PartialGradient(target, angles, i);
             angles[i] -= learningRate * gradient;
+
+            if (DistanceFromTarget(target, angles) < stoppingDistance)
+                return;
         }
     }
 }

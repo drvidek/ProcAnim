@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class IKLegs : MonoBehaviour
+public class IKLeg : MonoBehaviour
 {
     [SerializeField] private Transform _target;
     [SerializeField] private float _maxDistance, _snappingDistance;
@@ -11,7 +11,13 @@ public class IKLegs : MonoBehaviour
     bool _moving;
     Vector3 _currentPosition;
     [SerializeField] private Transform _root;
-    [SerializeField] private float _stepDuration;
+    [SerializeField] private Transform _tip;
+
+    public float DistanceToTarget => Vector3.Distance(_target.position, transform.position);
+    public float MaxDistance => _maxDistance;
+    public bool Moving => _moving;
+    public Transform Tip => _tip;
+    public Transform Target => _target;
 
     private void Start()
     {
@@ -20,29 +26,27 @@ public class IKLegs : MonoBehaviour
 
     private void Update()
     {
-        if (Vector3.Distance(_target.position, transform.position) > _maxDistance && !_moving)
+        if (!Moving)
         {
-            StartCoroutine(MoveTowardsTarget());
-        }
-        else
             transform.position = _currentPosition;
+        }
     }
 
-    IEnumerator MoveTowardsTarget()
+    public IEnumerator MoveTowardsTarget(IKLeg otherLeg)
     {
         _moving = true;
         Vector3 initPosition = transform.position;
-        for (int i = 0; i < _stepDuration; i++)
+        while (Vector3.Distance(transform.position,_target.position) > _snappingDistance)
         {
-            float lerp = i / (_stepDuration + 1f);
-
+            float lerp = Vector3.Distance(otherLeg.Target.position, otherLeg.transform.position)/(_maxDistance) + 0.01f;
             Vector3 nextPosition = Vector3.Lerp(initPosition, _target.position, lerp);
             float yPos = _yCurve.Evaluate(lerp) * _yMaxHeight;
             nextPosition.y = yPos;
             transform.position = nextPosition;
-            
-            i++;
-            yield return new WaitForFixedUpdate();
+            if (lerp >= 1)
+                break;
+
+            yield return null;
         }
 
         transform.position = _target.position;

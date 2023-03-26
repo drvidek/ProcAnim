@@ -624,6 +624,7 @@ GameObject:
   m_Component:
   - component: {fileID: 877954152}
   - component: {fileID: 877954153}
+  - component: {fileID: 877954154}
   m_Layer: 0
   m_Name: Root
   m_TagString: Untagged
@@ -661,8 +662,23 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _walkSpeed: 10
+  _turnSpeed: 90
   _leftTarget: {fileID: 1179009207}
   _rightTarget: {fileID: 1681864141}
+--- !u!114 &877954154
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 877954151}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e997aa2ecef7fde4188ec897360f60cc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _leftLeg: {fileID: 1097838407}
+  _rightLeg: {fileID: 1271358898}
 --- !u!1 &1097838402
 GameObject:
   m_ObjectHideFlags: 0
@@ -677,7 +693,7 @@ GameObject:
   - component: {fileID: 1097838403}
   - component: {fileID: 1097838407}
   m_Layer: 0
-  m_Name: Follow
+  m_Name: FollowLeft
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -774,7 +790,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _target: {fileID: 1179009207}
-  _maxDistance: 6
+  _maxDistance: 7
   _snappingDistance: 0
   _yCurve:
     serializedVersion: 2
@@ -811,7 +827,7 @@ MonoBehaviour:
     m_RotationOrder: 4
   _yMaxHeight: 2
   _root: {fileID: 877954152}
-  _stepDuration: 45
+  _tip: {fileID: 1506315510}
 --- !u!1 &1125580774
 GameObject:
   m_ObjectHideFlags: 0
@@ -1052,7 +1068,7 @@ GameObject:
   - component: {fileID: 1271358895}
   - component: {fileID: 1271358898}
   m_Layer: 0
-  m_Name: Follow
+  m_Name: FollowRight
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1149,7 +1165,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _target: {fileID: 1681864141}
-  _maxDistance: 6
+  _maxDistance: 7
   _snappingDistance: 0
   _yCurve:
     serializedVersion: 2
@@ -1186,7 +1202,7 @@ MonoBehaviour:
     m_RotationOrder: 4
   _yMaxHeight: 2
   _root: {fileID: 877954152}
-  _stepDuration: 45
+  _tip: {fileID: 794383883}
 --- !u!1 &1425198905
 GameObject:
   m_ObjectHideFlags: 0

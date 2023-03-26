@@ -2,10 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class InverseKinematicsController : MonoBehaviour
+public class IKController : MonoBehaviour
 {
     [SerializeField] private int _chainLength = 2;
-    [SerializeField] private Transform _target, _pole;
+    [SerializeField] private Transform _follow, _pole;
 
     [SerializeField] private int _iterations;
 
@@ -27,7 +27,7 @@ public class InverseKinematicsController : MonoBehaviour
 
     private void Awake()
     {
-        _lineRenderer.GetComponent<LineRenderer>();
+        //_lineRenderer.GetComponent<LineRenderer>();
         Initialise();
     }
 
@@ -39,10 +39,11 @@ public class InverseKinematicsController : MonoBehaviour
         _bonesLength = new float[_chainLength];
         _startDirectionSucc = new Vector3[_chainLength+1];
         _startRotationBone = new Quaternion[_chainLength+1];
-        _startRotationTarget = _target.rotation;
+        _startRotationTarget = _follow.rotation;
 
         _completeLength = 0;
 
+        if (_lineRenderer != null)
         _lineRenderer.positionCount = _chainLength + 1;
 
 
@@ -59,7 +60,7 @@ public class InverseKinematicsController : MonoBehaviour
             if (i == _joints.Length - 1)
             {
                 //point towards the target
-                _startDirectionSucc[i] = _target.position - currentBone.position;
+                _startDirectionSucc[i] = _follow.position - currentBone.position;
             }
             else
             {
@@ -85,7 +86,7 @@ public class InverseKinematicsController : MonoBehaviour
     void ResolveIK()
     {
         //if we don't have a target, don't move
-        if (_target == null)
+        if (_follow == null)
             return;
 
         //if our bone rig stops matching the chain length, re-initialise the rig
@@ -102,10 +103,10 @@ public class InverseKinematicsController : MonoBehaviour
         var rootRotDif = rootRot * Quaternion.Inverse(_startRotationRoot);
 
         //if the target is too far away (based on the total legnth of the rig and the distance of the target from the root joint)
-        if ((_target.position - _joints[0].position).sqrMagnitude >= _completeLength * _completeLength)
+        if ((_follow.position - _joints[0].position).sqrMagnitude >= _completeLength * _completeLength)
         {
             //get the direction to the target from the root
-            Vector3 direction = (_target.position - _positions[0]).normalized;
+            Vector3 direction = (_follow.position - _positions[0]).normalized;
             //for every joint, just stretch it torward that direction
             for (int i = 1; i < _positions.Length; i++)
             {
@@ -130,7 +131,7 @@ public class InverseKinematicsController : MonoBehaviour
                 {
                     //if we're the tip, snap to the target
                     if (i == _positions.Length - 1)
-                        _positions[i] = _target.position;
+                        _positions[i] = _follow.position;
                     //else set the position based on the direction from the previous bone to this bone and this bone's length
                     else
                         _positions[i] = _positions[i + 1] + (_positions[i] - _positions[i + 1]).normalized * _bonesLength[i];
@@ -143,7 +144,7 @@ public class InverseKinematicsController : MonoBehaviour
                 }
 
                 //if we're within snapping distance of the target, stop
-                if ((_positions[_positions.Length - 1] - _target.position).sqrMagnitude < _snappingDist * _snappingDist)
+                if ((_positions[_positions.Length - 1] - _follow.position).sqrMagnitude < _snappingDist * _snappingDist)
                     break;
             }
         }
@@ -172,7 +173,7 @@ public class InverseKinematicsController : MonoBehaviour
         {
             if (i == _positions.Length - 1)
             {
-                _joints[i].rotation = _target.rotation * Quaternion.Inverse(_startRotationTarget) * _startRotationBone[i];
+                _joints[i].rotation = _follow.rotation * Quaternion.Inverse(_startRotationTarget) * _startRotationBone[i];
             }
             else
             {

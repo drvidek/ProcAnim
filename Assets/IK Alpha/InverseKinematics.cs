@@ -12,9 +12,15 @@ public class InverseKinematics : MonoBehaviour
     private void Update()
     {
         DoInverseKinematics(target.position, angles);
-        for (int i = 0; i < joints.Length; i++)
+        Vector3 prevPoint = joints[0].transform.position;
+
+        Quaternion rotation = Quaternion.AngleAxis(angles[0], joints[0].axis);
+        for (int i = 1; i < joints.Length; i++)
         {
-            joints[i].transform.localEulerAngles = (angles[i] * joints[i].axis);
+            rotation *= Quaternion.AngleAxis(angles[i - 1], joints[i].axis);
+            Vector3 nextPoint = prevPoint + (rotation * joints[i].startOffset);
+            prevPoint = nextPoint;
+            joints[i].transform.LookAt(nextPoint);
         }
     }
 
@@ -57,7 +63,10 @@ public class InverseKinematics : MonoBehaviour
 
     public void DoInverseKinematics(Vector3 target, float[] angles)
     {
-        for (int i = 0; i < joints.Length; i++)
+        if (DistanceFromTarget(target, angles) < snappingDistance)
+            return;
+
+        for (int i = joints.Length-1; i >= 0; i--)
         {
             float gradient = PartialGradient(target, angles, i);
             angles[i] -= learningRate * gradient;

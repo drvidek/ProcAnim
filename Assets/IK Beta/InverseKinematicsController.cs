@@ -20,6 +20,10 @@ public class InverseKinematicsController : MonoBehaviour
     protected float _completeLength;
     protected Transform[] _joints;
     protected Vector3[] _positions;
+    protected Vector3[] _startDirectionSucc;
+    protected Quaternion[] _startRotationBone;
+    protected Quaternion _startRotationTarget;
+    protected Quaternion _startRotationRoot;
 
     private void Awake()
     {
@@ -33,6 +37,9 @@ public class InverseKinematicsController : MonoBehaviour
         _joints = new Transform[_chainLength + 1];
         _positions = new Vector3[_chainLength + 1];
         _bonesLength = new float[_chainLength];
+        _startDirectionSucc = new Vector3[_chainLength+1];
+        _startRotationBone = new Quaternion[_chainLength+1];
+        _startRotationTarget = _target.rotation;
 
         _completeLength = 0;
 
@@ -46,10 +53,18 @@ public class InverseKinematicsController : MonoBehaviour
         {
             //store the current bone
             _joints[i] = currentBone;
+            _startRotationBone[i] = currentBone.rotation;
 
-            //if this is our tip, it has no bone, so we can ignore it
-            if (i != _joints.Length - 1)
+            //if this is our tip, it has no bone
+            if (i == _joints.Length - 1)
             {
+                //point towards the target
+                _startDirectionSucc[i] = _target.position - currentBone.position;
+            }
+            else
+            {
+                //point towards the next bone
+                _startDirectionSucc[i] = _joints[i + 1].position - currentBone.position;
                 //otherwise set the length of the bone from this joint to the previous joint
                 _bonesLength[i] = (_joints[i + 1].position - currentBone.position).magnitude;
                 //and add that length to the total length of this rig
@@ -83,6 +98,9 @@ public class InverseKinematicsController : MonoBehaviour
             _positions[i] = _joints[i].position;
         }
 
+        var rootRot = (_joints[0].parent != null ? _joints[0].parent.rotation : Quaternion.identity);
+        var rootRotDif = rootRot * Quaternion.Inverse(_startRotationRoot);
+
         //if the target is too far away (based on the total legnth of the rig and the distance of the target from the root joint)
         if ((_target.position - _joints[0].position).sqrMagnitude >= _completeLength * _completeLength)
         {
@@ -98,6 +116,12 @@ public class InverseKinematicsController : MonoBehaviour
         //if the target is within reach
         else
         {
+            //apply snapback
+            for (int i = 0; i < _positions.Length - 1; i++)
+            {
+                _positions[i + 1] = Vector3.Lerp(_positions[i + 1], _positions[i] + rootRotDif * _startDirectionSucc[i], _snapBackStrength);
+            }
+
             //defines how many times to repeat the kinematics
             for (int iteration = 0; iteration < _iterations; iteration++)
             {
@@ -124,9 +148,36 @@ public class InverseKinematicsController : MonoBehaviour
             }
         }
 
-        //reapply the positions to the joints
+        //if we have a direction to bend towards
+        if (_pole != null)
+        {
+            //for each joint position
+            for (int i = 1; i < _positions.Length - 1; i++)
+            {
+                //create an infinite plane around the previous point, using the axis between the previous point and the next point
+                Plane plane = new Plane(_positions[i + 1] - _positions[i - 1], _positions[i - 1]);
+                //get the projected position of the pole on the plane
+                Vector3 projectedPole = plane.ClosestPointOnPlane(_pole.position);
+                //do the same with the current joint
+                Vector3 projectedJoint = plane.ClosestPointOnPlane(_positions[i]);
+                //get the angle on the plane at which point the projected joint is closest to the projected pole
+                float angle = Vector3.SignedAngle(projectedJoint - _positions[i - 1], projectedPole - _positions[i - 1], plane.normal);
+                //set the position of the joint based on that angle around the plane direction
+                _positions[i] = Quaternion.AngleAxis(angle, plane.normal) * (_positions[i] - _positions[i - 1]) + _positions[i - 1];
+            }
+        }
+
+        //reapply the positions and the rotations to the joints
         for (int i = 0; i < _positions.Length; i++)
         {
+            if (i == _positions.Length - 1)
+            {
+                _joints[i].rotation = _target.rotation * Quaternion.Inverse(_startRotationTarget) * _startRotationBone[i];
+            }
+            else
+            {
+                _joints[i].rotation = Quaternion.FromToRotation(_startDirectionSucc[i], _positions[i + 1] - _positions[i]) * _startRotationBone[i];
+            }
             _joints[i].position = _positions[i];
         }
     }

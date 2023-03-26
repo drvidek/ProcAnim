@@ -8,13 +8,30 @@ public class InverseKinematics : MonoBehaviour
     [SerializeField] private float samplingDistance, learningRate, stoppingDistance;
     [SerializeField] private Transform target;
     [SerializeField] float[] angles;
+    [SerializeField] private LineRenderer lineRenderer;
+
+    private void Start()
+    {
+        lineRenderer = GetComponent<LineRenderer>();
+        lineRenderer.positionCount = joints.Length;
+    }
 
     private void Update()
     {
         DoInverseKinematics(target.position, angles);
-        for (int i = 0; i < joints.Length; i++)
+        Vector3 prevPoint = joints[0].transform.position;
+        Quaternion rotation = Quaternion.identity;
+        for (int i = 1; i < joints.Length; i++)
         {
-            joints[i].transform.localEulerAngles = (angles[i] * joints[i].axis);
+            rotation *= Quaternion.AngleAxis(angles[i - 1], joints[i].axis);
+            Vector3 nextPoint = prevPoint + (rotation * joints[i].startOffset);
+            prevPoint = nextPoint;
+
+            joints[i].transform.position = nextPoint;
+            //joints[i].transform.localEulerAngles = angles[i] * joints[i].axis;
+
+            //joints[i].transform.rotation = rotation;
+            lineRenderer.SetPosition(i,nextPoint);
         }
     }
 
@@ -65,8 +82,8 @@ public class InverseKinematics : MonoBehaviour
             float gradient = PartialGradient(target, angles, i);
             angles[i] -= learningRate * gradient;
 
-            if (DistanceFromTarget(target, angles) < stoppingDistance)
-                return;
+           // if (DistanceFromTarget(target, angles) < stoppingDistance)
+           //     return;
         }
     }
 }

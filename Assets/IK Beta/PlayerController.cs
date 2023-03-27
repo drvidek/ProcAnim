@@ -4,8 +4,10 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
+    public enum PlayerState { Idle, Walk }
+    
     [SerializeField] private float _walkSpeed, _turnSpeed;
-    [SerializeField] private Transform _leftTarget, _rightTarget;
+    [SerializeField] private Transform _leftFootTarget, _rightFootTarget, _leftKneeTarget, _rightKneeTarget;
 
     private void Update()
     {

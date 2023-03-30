@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class IKController : MonoBehaviour
+public class IKLimb : MonoBehaviour
 {
     [SerializeField] private int _chainLength = 2;
     [SerializeField] private Transform _follow, _pole;
@@ -16,6 +16,8 @@ public class IKController : MonoBehaviour
 
     [SerializeField] private LineRenderer _lineRenderer;
 
+    [SerializeField] private Rigidbody[] _rigidbodies;
+
     protected float[] _bonesLength;
     protected float _completeLength;
     protected Transform[] _joints;
@@ -24,6 +26,9 @@ public class IKController : MonoBehaviour
     protected Quaternion[] _startRotationBone;
     protected Quaternion _startRotationTarget;
     protected Quaternion _startRotationRoot;
+
+    public float LimbLength => _completeLength;
+    public Transform Target => _follow;
 
     private void Awake()
     {
@@ -37,14 +42,16 @@ public class IKController : MonoBehaviour
         _joints = new Transform[_chainLength + 1];
         _positions = new Vector3[_chainLength + 1];
         _bonesLength = new float[_chainLength];
-        _startDirectionSucc = new Vector3[_chainLength+1];
-        _startRotationBone = new Quaternion[_chainLength+1];
+        _startDirectionSucc = new Vector3[_chainLength + 1];
+        _startRotationBone = new Quaternion[_chainLength + 1];
         _startRotationTarget = _follow.rotation;
+
+        _rigidbodies = new Rigidbody[_chainLength];
 
         _completeLength = 0;
 
         if (_lineRenderer != null)
-        _lineRenderer.positionCount = _chainLength + 1;
+            _lineRenderer.positionCount = _chainLength + 1;
 
 
         //get the tip bone
@@ -64,12 +71,15 @@ public class IKController : MonoBehaviour
             }
             else
             {
-                //point towards the next bone
+                //point towards the next joint
                 _startDirectionSucc[i] = _joints[i + 1].position - currentBone.position;
-                //otherwise set the length of the bone from this joint to the previous joint
+                //set the length of the bone from this joint to the previous joint
                 _bonesLength[i] = (_joints[i + 1].position - currentBone.position).magnitude;
                 //and add that length to the total length of this rig
                 _completeLength += _bonesLength[i];
+
+                _rigidbodies[i] = currentBone.GetComponent<Rigidbody>();
+
             }
 
             currentBone = currentBone.parent;
@@ -192,6 +202,14 @@ public class IKController : MonoBehaviour
         for (int i = 0; i < _chainLength + 1; i++)
         {
             _lineRenderer.SetPosition(i, _joints[i].position);
+        }
+    }
+
+    public void ToggleKinematicLimb(bool on)
+    {
+        foreach (var rb in _rigidbodies)
+        {
+            rb.isKinematic = on;
         }
     }
 }

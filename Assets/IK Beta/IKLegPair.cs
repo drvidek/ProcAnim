@@ -4,40 +4,28 @@ using UnityEngine;
 
 public class IKLegPair : MonoBehaviour
 {
-    [SerializeField] private IKLeg _leftLeg, _rightLeg;
+    [SerializeField] private IKFootFollow _leftFootFollow, _rightFootFollow;
+    [ SerializeField] private IKLimb _leftLeg, _rightLeg;
+    public IKFootFollow LeftFollow => _leftFootFollow;
+    public IKFootFollow RightFollow => _rightFootFollow;
 
-    public bool EitherLegMoving => _leftLeg.Moving || _rightLeg.Moving;
+    public bool EitherLegMoving => _leftFootFollow.Moving || _rightFootFollow.Moving;
 
     private void Update()
     {
-        if (!EitherLegMoving)
+        if (!EitherLegMoving && _leftLeg)
         {
-            if (!_leftLeg.Moving && _leftLeg.DistanceToTarget > _leftLeg.MaxDistance)
+            if (!_leftFootFollow.Moving && _leftFootFollow.DistanceToTarget > _leftFootFollow.MaxDistance)
             {
-                _leftLeg.StartCoroutine(_leftLeg.MoveTowardsTarget(_rightLeg));
+                _leftFootFollow.StartCoroutine(_leftFootFollow.MoveTowardsTarget(_rightFootFollow));
             }
-
-            if (!_rightLeg.Moving && _rightLeg.DistanceToTarget > _rightLeg.MaxDistance)
+            else
+            if (!_rightFootFollow.Moving && _rightFootFollow.DistanceToTarget > _rightFootFollow.MaxDistance)
             {
-                _rightLeg.StartCoroutine(_rightLeg.MoveTowardsTarget(_leftLeg));
+                _rightFootFollow.StartCoroutine(_rightFootFollow.MoveTowardsTarget(_leftFootFollow));
             }
         }
-
-        //if (!_rightLeg.Moving)
-        //{
-        //    if (_leftLeg.DistanceToTarget > _leftLeg.MaxDistance && !_leftLeg.Moving)
-        //    {
-        //        _leftLeg.StartCoroutine(_leftLeg.MoveTowardsTarget(_rightLeg.transform));
-        //    }
-        //}
-        //
-        //if (!_leftLeg.Moving)
-        //{
-        //    if (_rightLeg.DistanceToTarget > _rightLeg.MaxDistance)
-        //    {
-        //        _rightLeg.StartCoroutine(_rightLeg.MoveTowardsTarget(_rightLeg.transform));
-        //    }
-        //}
+        
 
     }
 

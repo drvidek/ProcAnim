@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.17276844, g: 0.21589246, b: 0.2978263, a: 1}
+  m_IndirectSpecularColor: {r: 0.17276844, g: 0.21589245, b: 0.2978263, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -485,7 +485,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   _distanceFromMyCentre: 0
-  _distanceFromStartHeight: 0
+  _limb: {fileID: 8183053886313787611}
 --- !u!1 &598114093
 GameObject:
   m_ObjectHideFlags: 0
@@ -661,7 +661,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 598505120}
-  m_Enabled: 0
+  m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -871,6 +871,7 @@ MonoBehaviour:
   _snappingDist: 0.01
   _snapBackStrength: 1
   _lineRenderer: {fileID: 794383884}
+  _rigidbodies: []
 --- !u!135 &794383886
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -987,6 +988,7 @@ MonoBehaviour:
   _rightFootTarget: {fileID: 0}
   _leftKneeTarget: {fileID: 0}
   _rightKneeTarget: {fileID: 0}
+  _legs: {fileID: 0}
 --- !u!114 &877954154
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -999,8 +1001,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e997aa2ecef7fde4188ec897360f60cc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _leftLeg: {fileID: 1097838407}
-  _rightLeg: {fileID: 1271358898}
+  _leftFootFollow: {fileID: 0}
+  _rightFootFollow: {fileID: 0}
+  _leftLeg: {fileID: 0}
+  _rightLeg: {fileID: 0}
 --- !u!1 &1016295646
 GameObject:
   m_ObjectHideFlags: 0
@@ -1567,7 +1571,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1255795824}
-  m_Enabled: 0
+  m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -1618,7 +1622,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1255795824}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.1, y: 0.1, z: 0.219}
+  m_LocalPosition: {x: 0.1, y: 0.1, z: 0}
   m_LocalScale: {x: 0.1, y: 0.1, z: 0.1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2236,7 +2240,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   _distanceFromMyCentre: 0
-  _distanceFromStartHeight: 0
+  _limb: {fileID: 6447374493187836056}
 --- !u!1 &1506315509
 GameObject:
   m_ObjectHideFlags: 0
@@ -2389,6 +2393,7 @@ MonoBehaviour:
   _snappingDist: 0.01
   _snapBackStrength: 1
   _lineRenderer: {fileID: 1506315511}
+  _rigidbodies: []
 --- !u!135 &1506315513
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -5092,6 +5097,7 @@ MonoBehaviour:
   _snappingDist: 0.001
   _snapBackStrength: 1
   _lineRenderer: {fileID: 0}
+  _rigidbodies: []
 --- !u!4 &6512577426543709890
 Transform:
   m_ObjectHideFlags: 0
@@ -5153,8 +5159,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e997aa2ecef7fde4188ec897360f60cc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _leftLeg: {fileID: 1255795825}
-  _rightLeg: {fileID: 598505121}
+  _leftFootFollow: {fileID: 598505121}
+  _rightFootFollow: {fileID: 1255795825}
+  _leftLeg: {fileID: 8183053886313787611}
+  _rightLeg: {fileID: 6447374493187836056}
 --- !u!114 &6758201320979534780
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5167,12 +5175,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 081f868fbc162aa44b7a0cea85eeabba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _walkSpeed: 2
+  _walkSpeed: 1.5
   _turnSpeed: 120
   _leftFootTarget: {fileID: 0}
   _rightFootTarget: {fileID: 0}
   _leftKneeTarget: {fileID: 0}
   _rightKneeTarget: {fileID: 0}
+  _legs: {fileID: 6758201320979534779}
 --- !u!1 &6777245667081220321
 GameObject:
   m_ObjectHideFlags: 0
@@ -5701,6 +5710,7 @@ MonoBehaviour:
   _snappingDist: 0.001
   _snapBackStrength: 1
   _lineRenderer: {fileID: 0}
+  _rigidbodies: []
 --- !u!4 &8204608969677590321
 Transform:
   m_ObjectHideFlags: 0

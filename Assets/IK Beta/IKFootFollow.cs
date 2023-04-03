@@ -43,12 +43,16 @@ public class IKFootFollow : MonoBehaviour
         _isMoving = true;
         Vector3 initPosition = transform.position;
         Vector3 initUp = transform.up;
+        Vector3 initForward = transform.forward;
+        Vector3 destination = Target.position;
+        Vector3 destinationUp = Target.up;
         for (int i = 1; i <= _steptime; ++i)
         {
             float lerp = i / (float)(_steptime + 1f);
-            transform.position = Vector3.Lerp(initPosition, Target.position, lerp);
-            transform.up = Vector3.Lerp(initUp, Target.up, lerp);
-            transform.position += transform.up * Mathf.Sin(lerp * Mathf.PI) * _stepHeight;
+            transform.position = Vector3.Lerp(initPosition, destination, lerp);
+            transform.up = Vector3.Lerp(initUp, destinationUp, lerp);
+            transform.position += Vector3.up * Mathf.Sin(lerp * Mathf.PI) * _stepHeight;
+            transform.forward = Vector3.Lerp(initForward, PlayerController.main.Hips.forward, lerp);
             yield return new WaitForFixedUpdate();
         }
 
@@ -63,9 +67,9 @@ public class IKFootFollow : MonoBehaviour
         //
         //     yield return new WaitForFixedUpdate();
         // }
-        transform.up = Target.up;
-        transform.forward = PlayerController.main.transform.forward;
-        transform.position = Target.position;
+        transform.up = destinationUp;
+        transform.forward = PlayerController.main.Hips.forward;
+        transform.position = destination;
         _currentPosition = transform.position;
         _isMoving = false;
     }

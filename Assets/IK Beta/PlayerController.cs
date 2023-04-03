@@ -7,12 +7,13 @@ public class PlayerController : MonoBehaviour
     public enum PlayerState { Idle, Walk }
 
     [SerializeField] private float _walkSpeed, _turnSpeed;
-    [SerializeField] private Transform _leftFootTarget, _rightFootTarget, _leftKneeTarget, _rightKneeTarget;
+    [SerializeField] private Transform _hips;
     [SerializeField] private IKLegPair _legs;
 
-    [SerializeField] private Vector3[] _lastPositions = new Vector3[10];
-    [SerializeField] private int _lastPositionIndex;
+   private Vector3[] _lastPositions = new Vector3[10];
+   private int _lastPositionIndex;
 
+    public Transform Hips => _hips;
 
     #region Singleton + Awake
     private static PlayerController _singleton;

@@ -34,7 +34,7 @@ public class IKLimb : MonoBehaviour
     public float LimbLength => _completeLength;
     public Transform Follow => _follow;
 
-
+    public Transform[] Joints => _joints;
 
     private void Awake()
     {
@@ -123,7 +123,10 @@ public class IKLimb : MonoBehaviour
         {
             //if we're really too far, make the limb ragdoll
             if ((_follow.position - _joints[0].position).magnitude >= _completeLength * 1.1f)
-                ToggleKinematicLimb(false);
+            {
+                if (!_isRagdoll)
+                    ToggleKinematicLimb(false);
+            }
             else
             {
                 if (_isRagdoll)
@@ -176,6 +179,9 @@ public class IKLimb : MonoBehaviour
             }
         }
 
+        if (_isRagdoll)
+            return;
+
         //if we have a direction to bend towards
         if (_pole != null)
         {
@@ -200,7 +206,6 @@ public class IKLimb : MonoBehaviour
         {
             if (i == _positions.Length - 1)
             {
-                Vector3 idealDirection = QMath.Direction(PlayerController.main.transform.position,_follow.position);
                 _joints[i].rotation = _follow.rotation * Quaternion.Inverse(_startRotationTarget) * _startRotationBone[i];
             }
             else

@@ -412,7 +412,7 @@ Transform:
   m_GameObject: {fileID: 562415343}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -0.113, y: 0.1, z: 0.25}
-  m_LocalScale: {x: 0.25, y: 0.25, z: 0.25}
+  m_LocalScale: {x: 0.2, y: 0.2, z: 0.2}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 6233585409247398144}
@@ -480,11 +480,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df41c60315bb0a449a7b6d036ffd5f47, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _rightFoot: 0
   _checkDistance: 2
   _floorMask:
     serializedVersion: 2
     m_Bits: 64
   _distanceFromMyCentre: 0
+  _halfStepDistance: 0.25
+  _halfSholderWidth: 0.11
   _limb: {fileID: 8183053886313787611}
 --- !u!1 &598114093
 GameObject:
@@ -989,6 +992,18 @@ MonoBehaviour:
   _leftKneeTarget: {fileID: 0}
   _rightKneeTarget: {fileID: 0}
   _legs: {fileID: 0}
+  _lastPositions:
+  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 0, z: 0}
+  _lastPositionIndex: 0
 --- !u!114 &877954154
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2167,7 +2182,7 @@ Transform:
   m_GameObject: {fileID: 1487755232}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0.11, y: 0.1, z: 0.25}
-  m_LocalScale: {x: 0.25, y: 0.25, z: 0.25}
+  m_LocalScale: {x: 0.2, y: 0.2, z: 0.2}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 6233585409247398144}
@@ -2235,11 +2250,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df41c60315bb0a449a7b6d036ffd5f47, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _rightFoot: 1
   _checkDistance: 2
   _floorMask:
     serializedVersion: 2
     m_Bits: 64
   _distanceFromMyCentre: 0
+  _halfStepDistance: 0.25
+  _halfSholderWidth: 0.11
   _limb: {fileID: 6447374493187836056}
 --- !u!1 &1506315509
 GameObject:
@@ -5182,6 +5200,18 @@ MonoBehaviour:
   _leftKneeTarget: {fileID: 0}
   _rightKneeTarget: {fileID: 0}
   _legs: {fileID: 6758201320979534779}
+  _lastPositions:
+  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 0, z: 0}
+  _lastPositionIndex: 0
 --- !u!1 &6777245667081220321
 GameObject:
   m_ObjectHideFlags: 0

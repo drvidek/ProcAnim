@@ -94,7 +94,7 @@ public class QMath
     }
 
     /// <summary>
-    /// If n falls below min or above max, it will wrap to the other value
+    /// Takes a number n, and returns it. If it falls below min or above max, it will wrap to the opposite value.
     /// </summary>
     /// <param name="n"></param>
     /// <param name="min"></param>

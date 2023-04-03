@@ -64,6 +64,7 @@ public class IKFootFollow : MonoBehaviour
         //     yield return new WaitForFixedUpdate();
         // }
         transform.up = Target.up;
+        transform.forward = PlayerController.main.transform.forward;
         transform.position = Target.position;
         _currentPosition = transform.position;
         _isMoving = false;

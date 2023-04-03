@@ -4,19 +4,18 @@ using UnityEngine;
 
 public class IKFootTarget : MonoBehaviour
 {
+    [SerializeField] private bool _rightFoot;
     [SerializeField] private float _checkDistance;
     [SerializeField] private LayerMask _floorMask;
     [SerializeField] private float _distanceFromMyCentre;
+    [SerializeField] private float _halfStepDistance = 0.25f, _halfSholderWidth = 0.11f;
     [SerializeField] private IKLimb _limb;
-
-    private Vector3 _startPosition;
 
     public IKLimb Limb => _limb;
 
     private void Start()
     {
         _distanceFromMyCentre = transform.localScale.x / 2f;
-        _startPosition = transform.localPosition;
     }
 
     private void FixedUpdate()
@@ -31,9 +30,13 @@ public class IKFootTarget : MonoBehaviour
         //    transform.localPosition = _startPosition;
         //}
 
-        Vector3 rayStart = transform.parent.position + _startPosition + (Vector3.up * 0.5f);
-        if (_limb.IsRagdoll)
-            rayStart.z -= _startPosition.z;
+        Vector3 rayStart = transform.parent.position + (Vector3.up * 0.5f);
+        if (!_limb.IsRagdoll)
+        {
+            rayStart += PlayerController.main.AverageDirection * _halfStepDistance;
+        }
+        rayStart += transform.TransformDirection(Vector3.right) * _halfSholderWidth * (_rightFoot ? 1 : -1);
+        //rayStart = transform.TransformDirection(rayStart);
 
 
         RaycastHit hit;

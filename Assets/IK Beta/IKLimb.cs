@@ -200,6 +200,7 @@ public class IKLimb : MonoBehaviour
         {
             if (i == _positions.Length - 1)
             {
+                Vector3 idealDirection = QMath.Direction(PlayerController.main.transform.position,_follow.position);
                 _joints[i].rotation = _follow.rotation * Quaternion.Inverse(_startRotationTarget) * _startRotationBone[i];
             }
             else

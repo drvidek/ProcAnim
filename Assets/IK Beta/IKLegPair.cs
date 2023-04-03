@@ -9,18 +9,18 @@ public class IKLegPair : MonoBehaviour
     public IKFootFollow LeftFollow => _leftFootFollow;
     public IKFootFollow RightFollow => _rightFootFollow;
 
-    public bool EitherLegMoving => _leftFootFollow.Moving || _rightFootFollow.Moving;
+    public bool EitherLegMoving => _leftFootFollow.IsMoving || _rightFootFollow.IsMoving;
 
     private void Update()
     {
-        if (!EitherLegMoving && _leftLeg)
+        if (!EitherLegMoving)
         {
-            if (!_leftFootFollow.Moving && _leftFootFollow.DistanceToTarget > _leftFootFollow.MaxDistance)
+            if (!_leftFootFollow.IsMoving && _leftFootFollow.DistanceToTarget > _leftFootFollow.MaxDistance && !_leftLeg.IsRagdoll)
             {
                 _leftFootFollow.StartCoroutine(_leftFootFollow.MoveTowardsTarget(_rightFootFollow));
             }
             else
-            if (!_rightFootFollow.Moving && _rightFootFollow.DistanceToTarget > _rightFootFollow.MaxDistance)
+            if (!_rightFootFollow.IsMoving && _rightFootFollow.DistanceToTarget > _rightFootFollow.MaxDistance && !_rightLeg.IsRagdoll)
             {
                 _rightFootFollow.StartCoroutine(_rightFootFollow.MoveTowardsTarget(_leftFootFollow));
             }

@@ -3,17 +3,17 @@ using UnityEngine;
 
 public class IKFootFollow : MonoBehaviour
 {
-    [SerializeField] private Transform _target;
-    [SerializeField] private float _maxDistance, _snappingDistance, _steptime;
+    [SerializeField] private IKFootTarget _target;
+    [SerializeField] private float _maxDistanceFromTarget, _snappingDistance, _steptime;
     [SerializeField] private AnimationCurve _yCurve;
     [SerializeField] private float _stepHeight;
-    [SerializeField] bool _moving;
+    [SerializeField] bool _isMoving;
     Vector3 _currentPosition;
 
-    public float DistanceToTarget => Vector3.Distance(_target.position, transform.position);
-    public float MaxDistance => _maxDistance;
-    public bool Moving => _moving;
-    public Transform Target => _target;
+    public float DistanceToTarget => Vector3.Distance(Target.position, transform.position);
+    public float MaxDistance => _maxDistanceFromTarget;
+    public bool IsMoving => _isMoving;
+    public Transform Target => _target.transform;
 
     private void Start()
     {
@@ -22,22 +22,32 @@ public class IKFootFollow : MonoBehaviour
 
     private void Update()
     {
-        if (!Moving)
+        if (!IsMoving)
         {
-            transform.position = _currentPosition;
+            if (!_target.Limb.IsRagdoll)
+                transform.position = _currentPosition;
+        }
+    }
+
+    private void FixedUpdate()
+    {
+        if (_target.Limb.IsRagdoll)
+        {
+            transform.position = Target.position;
+            _currentPosition = transform.position;
         }
     }
 
     public IEnumerator MoveTowardsTarget(IKFootFollow otherLeg)
     {
-        _moving = true;
+        _isMoving = true;
         Vector3 initPosition = transform.position;
         Vector3 initUp = transform.up;
         for (int i = 1; i <= _steptime; ++i)
         {
             float lerp = i / (float)(_steptime + 1f);
-            transform.position = Vector3.Lerp(initPosition, _target.position, lerp);
-            transform.up = Vector3.Lerp(initUp, _target.up, lerp);
+            transform.position = Vector3.Lerp(initPosition, Target.position, lerp);
+            transform.up = Vector3.Lerp(initUp, Target.up, lerp);
             transform.position += transform.up * Mathf.Sin(lerp * Mathf.PI) * _stepHeight;
             yield return new WaitForFixedUpdate();
         }
@@ -54,9 +64,9 @@ public class IKFootFollow : MonoBehaviour
         //     yield return new WaitForFixedUpdate();
         // }
         transform.up = Target.up;
-        transform.position = _target.position;
+        transform.position = Target.position;
         _currentPosition = transform.position;
-        _moving = false;
+        _isMoving = false;
     }
 
 }

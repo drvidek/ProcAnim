@@ -27,8 +27,14 @@ public class IKLimb : MonoBehaviour
     protected Quaternion _startRotationTarget;
     protected Quaternion _startRotationRoot;
 
+    private bool _isRagdoll;
+
+    public bool IsRagdoll => _isRagdoll;
+
     public float LimbLength => _completeLength;
-    public Transform Target => _follow;
+    public Transform Follow => _follow;
+
+
 
     private void Awake()
     {
@@ -115,18 +121,29 @@ public class IKLimb : MonoBehaviour
         //if the target is too far away (based on the total legnth of the rig and the distance of the target from the root joint)
         if ((_follow.position - _joints[0].position).sqrMagnitude >= _completeLength * _completeLength)
         {
-            //get the direction to the target from the root
-            Vector3 direction = (_follow.position - _positions[0]).normalized;
-            //for every joint, just stretch it torward that direction
-            for (int i = 1; i < _positions.Length; i++)
+            //if we're really too far, make the limb ragdoll
+            if ((_follow.position - _joints[0].position).magnitude >= _completeLength * 1.1f)
+                ToggleKinematicLimb(false);
+            else
             {
-                //set the current joint position based on the direction to the target and the length of the last bone
-                _positions[i] = _positions[i - 1] + direction * _bonesLength[i - 1];
+                if (_isRagdoll)
+                    ToggleKinematicLimb(true);
+                //get the direction to the target from the root
+                Vector3 direction = (_follow.position - _positions[0]).normalized;
+                //for every joint, just stretch it torward that direction
+                for (int i = 1; i < _positions.Length; i++)
+                {
+                    //set the current joint position based on the direction to the target and the length of the last bone
+                    _positions[i] = _positions[i - 1] + direction * _bonesLength[i - 1];
+                }
             }
         }
         //if the target is within reach
         else
         {
+            if (_isRagdoll)
+                ToggleKinematicLimb(true);
+
             //apply snapback
             for (int i = 0; i < _positions.Length - 1; i++)
             {
@@ -210,6 +227,8 @@ public class IKLimb : MonoBehaviour
         foreach (var rb in _rigidbodies)
         {
             rb.isKinematic = on;
+            rb.useGravity = !on;
         }
+        _isRagdoll = !on;
     }
 }

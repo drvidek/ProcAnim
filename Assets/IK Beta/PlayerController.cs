@@ -28,8 +28,8 @@ public class PlayerController : MonoBehaviour
             transform.Rotate(0, horAxis * _turnSpeed * Time.deltaTime, 0);
         }
 
-        float height = (_legs.LeftFollow.Target.position.y + _legs.LeftFollow.Target.position.y) / 2;
-        Debug.Log($"{_legs.LeftFollow.Target.position.y} + {_legs.LeftFollow.Target.position.y} ({_legs.LeftFollow.Target.position.y + _legs.LeftFollow.Target.position.y}) / 2 = {height}");
-        transform.position = QMath.ReplaceVectorValue(transform.position, VectorValue.y, height);
+       // float height = (_legs.LeftFollow.Target.position.y + _legs.LeftFollow.Target.position.y) / 2;
+       // Debug.Log($"{_legs.LeftFollow.Target.position.y} + {_legs.LeftFollow.Target.position.y} ({_legs.LeftFollow.Target.position.y + _legs.LeftFollow.Target.position.y}) / 2 = {height}");
+       // transform.position = QMath.ReplaceVectorValue(transform.position, VectorValue.y, height);
     }
 }
